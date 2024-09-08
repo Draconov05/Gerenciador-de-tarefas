@@ -4,10 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 export type AssuntoDocument = HydratedDocument<Assunto>;
 
-enum Status {
-    Pending = "pendente", //or User = "user",
-    Progress = "Em Progresso", // or Admin = "admin",
-    Done = "Concluído"
+export enum Status {
+    Pendente = "Pendente", //or User = "user",
+    Em_Progresso = "Em Progresso", // or Admin = "admin",
+    Concluido = "Concluído"
   }
 
 @Schema()
