@@ -16,8 +16,8 @@ export class Link {
   @Prop()
   link: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Assunto' })
-  palavrasChaves: Assunto;
+  @Prop({ type: mongoose.Schema.Types.String, ref: 'Assunto' })
+  AssuntoId: string;
 }
 
 export const LinkSchema = SchemaFactory.createForClass(Link);
