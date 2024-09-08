@@ -10,8 +10,8 @@
     </div>
 
     <ModalGray :open="openModal" @close="closeModals()">
-      <ModalEdit v-if="showModelEdit" :task="selectedTaskToEdit"/>
-      <ModalAdd v-else-if="showModelAdd"/>
+      <ModalEdit v-if="showModelEdit" :task="selectedTaskToEdit" @changed="GetTasks" @close="closeModals()"/>
+      <ModalAdd v-else-if="showModelAdd" @changed="GetTasks" @close="closeModals()"/>
     </ModalGray>
 
 </template>  
@@ -56,6 +56,7 @@ export default {
   },
   methods: {
     async GetTasks() {
+      console.log("Tasks Loading")
       axios.get("http://localhost:3000/assuntos").then( res => {
         this.LocalTasks = res.data;
       })
