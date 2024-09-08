@@ -97,7 +97,8 @@ export default {
 
         axios.post("http://localhost:3000/assuntos/", data).then( res => {
             this.LocalTasks = res.data;
-            this.$emit("changed")
+            this.$emit("changed");
+            this.$emit("close");
         }).catch(err => console.log(err))
 
     }
