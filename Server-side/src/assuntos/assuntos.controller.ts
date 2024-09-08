@@ -1,6 +1,5 @@
 import { Controller ,Get ,Post ,Put ,Req, Body, Delete, Param } from '@nestjs/common';
 import { Request } from 'express';
-import { Schema } from 'mongoose';
 import { AssuntosService } from './assuntos.service';
 import { Assunto } from './schemas/assunto.schema';
 import { CreateAssuntoDto } from './dto/create-assunto.dto';
@@ -13,6 +12,17 @@ export class AssuntosController {
     @Get()
     index(@Req() request: Request): Promise<Assunto[]> {
         return this.appService.findAll();
+    }
+
+    @Get(":id")
+    findOne(@Req() request: Request, id: string): Promise<Assunto> {
+        return this.appService.findOne(id);
+    }
+
+    @Get("noticias/:id")
+    async noticias(@Req() request: Request, id: string): Promise<any> {
+        this.appService.storeNoticias(id);
+        return this.appService.findOne(id);
     }
 
     @Post()

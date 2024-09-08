@@ -1,10 +1,11 @@
 import { Model, Schema } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Assunto } from './schemas/assunto.schema';
+import { Assunto, Status } from './schemas/assunto.schema';
 import { CreateAssuntoDto } from './dto/create-assunto.dto';
 import { LinksService } from '../links/links.service';
 import { Link } from '../links/schemas/link.schema';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AssuntosService {
@@ -13,7 +14,7 @@ export class AssuntosService {
 
   constructor(
     @InjectModel(Assunto.name) private assuntoModel: Model<Assunto>, 
-    // @InjectModel(Link.name) private linkModel: Model<Link>, 
+    private readonly httpService: HttpService,
     linksService: LinksService) {
     this.linkService = linksService;
   }
@@ -31,6 +32,26 @@ export class AssuntosService {
     ]).exec();
 
     return res;
+  }
+
+  async findOne(id: string): Promise<Assunto> {
+    var res = await this.assuntoModel.aggregate([
+      {
+        $match: {
+          "_id": id
+        }
+      },
+      {
+        $lookup: {
+          from: "links",
+          localField: "_id",
+          foreignField: "AssuntoId",
+          as: "link"
+        }
+      }
+    ]).exec();
+
+    return res[0];
   }
 
   async create(CreateAssuntoDto: CreateAssuntoDto): Promise<Assunto> {
@@ -58,15 +79,14 @@ export class AssuntosService {
     return createdAssunto;
   }
 
-  async update(id: string, Request: any): Promise<Assunto> {
+  async update(id: string, CreateAssuntoDto: CreateAssuntoDto): Promise<Assunto> {
+    
     var _id = id;
-    var titulo = Request.titulo
-    var palavrasChaves = Request.palavrasChaves
-    var status = Request.status
+    var titulo = CreateAssuntoDto.titulo
+    var palavrasChaves = CreateAssuntoDto.palavrasChaves
+    var status : Status = Status[CreateAssuntoDto.status]
 
-    var link = Request.link
-
-    var assunto = await this.assuntoModel.findOne({ _id: new Schema.Types.ObjectId(_id) }).exec();
+    var assunto = await this.assuntoModel.findOne({ _id: _id }).exec();
 
     if (titulo != null) {
       assunto.titulo = titulo;
@@ -80,17 +100,41 @@ export class AssuntosService {
       assunto.status = status;
     }
 
-    if (link != null) {
-      // update link
-      // var assunto = await this.assuntoModel.findOne({ _id: new Schema.Types.ObjectId(_id) }).exec();
-      assunto.status = status;
-    }
-
     return assunto.save();
   }
 
-  async getNoticias(): Promise<any> {
+  async storeNoticias(id: string): Promise<any> {
+    const assunto = await this.assuntoModel.findOne({"_id": id});
+    var tags = assunto.palavrasChaves.split(",")
+    tags.forEach(element => {
 
+      if(element == "ar livre"){
+
+      }else{
+
+        var baseUrl = "https://servicodados.ibge.gov.br/api/v3/noticias/";
+
+        var url = baseUrl+"?destaque=0&tipo=noticia&busca="+element;
+
+        var res = this.httpService.get(url);
+
+        res["items"].forEach(el => {
+
+          var find = this.linkService.findByLink(el["link"]);
+          
+          if(!find){
+            var Link = {
+              "link": el["link"]
+            }
+        
+            Link["AssuntoId"] = assunto;
+          }
+        })
+      }
+
+      this.linkService.create(Link);
+    });
+    return ;
   }
 
 }

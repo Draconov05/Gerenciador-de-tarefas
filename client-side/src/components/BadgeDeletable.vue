@@ -1,14 +1,18 @@
 
 <template>
-    <div :class="badgeClass">
-      {{ value ?? "" }}
-      <slot></slot>
+    <div :class="badgeClass" class="space-x-2">
+      {{ value ?? "." }} 
+      <div class="cursor-pointer flex justify-center" @click="$emit('delete',this.value)">
+        <i class='bx bx-x bx-xs'></i>
+      </div>
+
     </div>
 </template>  
 
 <script >
 export default {
   props: ["tipo","value"],
+  emits: ["delete"],
   data() {
     return {
     }
@@ -17,7 +21,7 @@ export default {
     badgeClass(){
       switch (this.tipo) {
 
-        case "Pendente":
+        case "pendente":
           return "inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10";
         case "Em Progresso":
           return "inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10";

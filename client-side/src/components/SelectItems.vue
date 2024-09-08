@@ -80,6 +80,7 @@
 
     export default {
         props: ["options","selected"],
+        emits: ["select"],
         components: {
             Listbox,
             CheckIcon,
@@ -98,7 +99,7 @@
         },
         watch: {
             selectedOption(value){
-                this.$emit("selected",value)
+                this.$emit("select",value)
             }
         },
         methods: {
