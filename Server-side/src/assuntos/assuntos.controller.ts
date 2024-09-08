@@ -15,13 +15,13 @@ export class AssuntosController {
     }
 
     @Get(":id")
-    findOne(@Req() request: Request, id: string): Promise<Assunto> {
+    findOne(@Param('id') id: string, @Req() request: Request): Promise<Assunto> {
         return this.appService.findOne(id);
     }
 
     @Get("noticias/:id")
-    async noticias(@Req() request: Request, id: string): Promise<any> {
-        return this.appService.storeNoticias(id);
+    async noticias(@Param('id') id: string, @Req() request: Request): Promise<Assunto> {
+        return this.appService.getNoticias(id);
     }
 
     @Post()

@@ -6,6 +6,10 @@ import { CreateAssuntoDto } from './dto/create-assunto.dto';
 import { LinksService } from '../links/links.service';
 import { Link } from '../links/schemas/link.schema';
 import { HttpService } from '@nestjs/axios';
+import { HttpException, HttpStatus, ForbiddenException} from '@nestjs/common';
+import { map, catchError } from 'rxjs';
+import axios from 'axios';
+
 
 @Injectable()
 export class AssuntosService {
@@ -13,7 +17,7 @@ export class AssuntosService {
   linkService = null;
 
   constructor(
-    @InjectModel(Assunto.name) private assuntoModel: Model<Assunto>, 
+    @InjectModel(Assunto.name) private assuntoModel: Model<Assunto>,
     private readonly httpService: HttpService,
     linksService: LinksService) {
     this.linkService = linksService;
@@ -56,25 +60,22 @@ export class AssuntosService {
 
   async create(CreateAssuntoDto: CreateAssuntoDto): Promise<Assunto> {
 
-    
+    var status: Status = Status[CreateAssuntoDto.status]
+
     var AssuntoData = {
       "titulo": CreateAssuntoDto.titulo,
       "palavrasChaves": CreateAssuntoDto.palavrasChaves,
-      "status": CreateAssuntoDto.status
+      "status": status
     };
 
     const createdAssunto = new this.assuntoModel(AssuntoData);
     createdAssunto.save();
 
-    if(CreateAssuntoDto.link){
-      var Link = {
-        "link": CreateAssuntoDto.link
-      }
-  
-      Link["AssuntoId"] = createdAssunto;
-  
-      this.linkService.create(Link);
-    }
+    var tags = createdAssunto.palavrasChaves.split(",")
+
+    await this.storeNoticias(tags,createdAssunto)
+
+    console.log("done!")
 
     return createdAssunto;
   }
@@ -84,7 +85,7 @@ export class AssuntosService {
     var _id = id;
     var titulo = CreateAssuntoDto.titulo
     var palavrasChaves = CreateAssuntoDto.palavrasChaves
-    var status : Status = Status[CreateAssuntoDto.status]
+    var status: Status = Status[CreateAssuntoDto.status]
 
     var assunto = await this.assuntoModel.findOne({ _id: _id }).exec();
 
@@ -103,53 +104,94 @@ export class AssuntosService {
     return assunto.save();
   }
 
-  async delete(id: string): Promise<Boolean>{
+  async delete(id: string): Promise<Boolean> {
     try {
 
-      await this.assuntoModel.deleteOne({"_id": id})
-      
+      await this.assuntoModel.deleteOne({ "_id": id })
+
       return true
 
     } catch (error) {
       console.log(error)
       return false
     }
-    
+
   }
 
-  async storeNoticias(id: string): Promise<any> {
-    const assunto = await this.assuntoModel.findOne({"_id": id});
-    var tags = assunto.palavrasChaves.split(",")
-    tags.forEach(element => {
+  async storeNoticias(tags: any[],assunto): Promise<Boolean> {
+    try {
+      await tags.forEach(async element => {
+        if (element == "ar livre") {
+          return true
+        } else {
 
-      if(element == "ar livre"){
+          var baseUrl = "https://servicodados.ibge.gov.br/api/v3/noticias/";
 
-      }else{
+          var url = baseUrl + "?destaque=0&tipo=noticia&busca=" + element;
 
-        var baseUrl = "https://servicodados.ibge.gov.br/api/v3/noticias/";
+          const response = await axios({
+            method: "GET",
+            url: url
+          }).catch(() => {
+            throw new ForbiddenException('API not available');
+          });
 
-        var url = baseUrl+"?destaque=0&tipo=noticia&busca="+element;
+          response.data["items"].forEach(async el => {
 
-        var res = this.httpService.get(url);
+            var find = await this.linkService.findByLink(el["link"]);
 
-        res["items"].forEach(el => {
+            if (!find) { 
+              var Link = {
+                "link": el["link"]
+              }
 
-          var find = this.linkService.findByLink(el["link"]);
-          
-          if(!find){
-            var Link = {
-              "link": el["link"]
+              Link["AssuntoId"] = assunto;
+
+              await this.linkService.create(Link);
             }
-        
-            Link["AssuntoId"] = assunto;
+          })
+          
+        } 
+      });
+
+      return true
+
+    } catch (error) {
+      console.log(error)
+      throw new HttpException('Erro interno', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+  }
+
+  async getNoticias(id: string): Promise<Assunto> {
+    try {
+      const assunto = await this.assuntoModel.findOne({ _id: id }).exec();
+      var tags = assunto.palavrasChaves.split(",")
+
+      await this.storeNoticias(tags,assunto)
+
+      var res = await this.assuntoModel.aggregate([
+        {
+          $match: {
+            "_id": id
           }
-        })
-      }
+        },
+        {
+          $lookup: {
+            from: "links",
+            localField: "_id",
+            foreignField: "AssuntoId",
+            as: "link",
+          }
+        }
+      ]).exec();
 
-      this.linkService.create(Link);
-    });
+      return res[0];
+    } catch (error) {
+      console.log(error)
+      throw new HttpException('Erro interno', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
-    return this.linkService.find(assunto);
   }
 
 }
