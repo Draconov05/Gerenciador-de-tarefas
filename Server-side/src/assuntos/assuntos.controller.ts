@@ -1,7 +1,9 @@
-import { Controller ,Get ,Post ,Put ,Req } from '@nestjs/common';
+import { Controller ,Get ,Post ,Put ,Req, Body, Delete, Param } from '@nestjs/common';
 import { Request } from 'express';
+import { Schema } from 'mongoose';
 import { AssuntosService } from './assuntos.service';
 import { Assunto } from './schemas/assunto.schema';
+import { CreateAssuntoDto } from './dto/create-assunto.dto';
 
 @Controller('assuntos')
 export class AssuntosController {
@@ -14,13 +16,18 @@ export class AssuntosController {
     }
 
     @Post()
-    create(@Req() request: Request): string {
-        return "create assunto";
+    create(@Body() CreateAssuntoDto: CreateAssuntoDto): any {
+        return this.appService.create(CreateAssuntoDto);
     }
 
-    @Put()
-    update(@Req() request: Request): string {
-        return "update assunto";
+    @Put(':id')
+    update(@Param('id') id: string, @Body() CreateAssuntoDto: CreateAssuntoDto): any {
+        return this.appService.update(id,CreateAssuntoDto);
+    }
+
+    @Delete()
+    delete(@Param('id') id: string): any {
+        return;
     }
 
 }
