@@ -10,7 +10,7 @@ export class LinksService {
 
     async find(assunto): Promise<Link> { 
         return await this.linkModel.findOne({AssuntoId: assunto}).exec();
-      }
+    }
 
     async create(CreateLink: any): Promise<Link> {
         const createdLink = new this.linkModel(CreateLink);

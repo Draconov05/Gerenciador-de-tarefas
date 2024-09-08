@@ -80,7 +80,7 @@ export class AssuntosService {
   }
 
   async update(id: string, CreateAssuntoDto: CreateAssuntoDto): Promise<Assunto> {
-    
+
     var _id = id;
     var titulo = CreateAssuntoDto.titulo
     var palavrasChaves = CreateAssuntoDto.palavrasChaves
@@ -101,6 +101,20 @@ export class AssuntosService {
     }
 
     return assunto.save();
+  }
+
+  async delete(id: string): Promise<Boolean>{
+    try {
+
+      await this.assuntoModel.deleteOne({"_id": id})
+      
+      return true
+
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+    
   }
 
   async storeNoticias(id: string): Promise<any> {
@@ -134,7 +148,8 @@ export class AssuntosService {
 
       this.linkService.create(Link);
     });
-    return ;
+
+    return this.linkService.find(assunto);
   }
 
 }

@@ -21,8 +21,7 @@ export class AssuntosController {
 
     @Get("noticias/:id")
     async noticias(@Req() request: Request, id: string): Promise<any> {
-        this.appService.storeNoticias(id);
-        return this.appService.findOne(id);
+        return this.appService.storeNoticias(id);
     }
 
     @Post()
@@ -35,9 +34,9 @@ export class AssuntosController {
         return this.appService.update(id,CreateAssuntoDto);
     }
 
-    @Delete()
-    delete(@Param('id') id: string): any {
-        return;
+    @Delete(':id')
+    delete(@Param('id') id: string): Promise<Boolean> {
+        return this.appService.delete(id);
     }
 
 }
