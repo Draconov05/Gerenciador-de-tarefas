@@ -92,8 +92,8 @@
         data() {
             return {
                 selectedOption: {
-                    text: this.selected,
-                    value: this.selected
+                    text: this.selected ?? "",
+                    value: this.selected ?? ""
                 }
             }
         },

@@ -1,6 +1,6 @@
 
 <template>
-    <div class="border rounded-md h-[15vh] w-[20vw] px-2" @mouseover="show_menu = true" @mouseleave="show_menu = false" >
+    <div class="border rounded-md h-[15vh] w-[20vw] px-2 flex flex-col justify-between" @mouseover="show_menu = true" @mouseleave="show_menu = false" >
         <div class="h-1/3 flex items-center justify-between">
             <div>
                 {{ localTask.titulo }}
@@ -58,7 +58,7 @@ export default {
             this.$emit("modal_edit",this.task)
         },
         ShowNews(){
-            
+            this.$router.replace({ name: 'noticias', query: { task: this.task._id }})
         },
         OpenDelete(){
             this.$emit("delete_confirm",this.task)

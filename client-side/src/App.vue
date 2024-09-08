@@ -1,15 +1,10 @@
 <template>
-  <index_tasks/>
+  <router-view/>
 </template>
 
 <script>
-import index_tasks from './pages/Tasks/index.vue'
-
 export default {
   name: 'App',
-  components: {
-    index_tasks
-  }
 }
 </script>
 
