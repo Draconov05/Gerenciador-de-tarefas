@@ -4,16 +4,15 @@
       <HeaderBar/>
       <!-- listgrid -->
        <div id="list" class="grid grid-cols-4 gap-4 p-5">
-          <TaskCard v-for="(task, index) in LocalTasks" :key="index" :task="task" @modal_edit="openModelEdit = true"/>
+          <TaskCard v-for="(task, index) in LocalTasks" :key="index" :task="task" @modal_edit="OpenModalEdit($event)"/>
+          <CreateCard @modal_add="showModelAdd = true"/>
        </div>
     </div>
 
-    <Teleport to="body">
-      <ModalGray :open="openModelEdit || openModelAdd" @close="closeModals">
-        <ModalEdit v-if="openModelEdit"/>
-        <ModalAdd v-else-if="openModelAdd"/>
-      </ModalGray>
-    </Teleport>
+    <ModalGray :open="openModal" @close="closeModals()">
+      <ModalEdit v-if="showModelEdit" :task="selectedTaskToEdit"/>
+      <ModalAdd v-else-if="showModelAdd"/>
+    </ModalGray>
 
 </template>  
 
@@ -24,6 +23,7 @@ import TaskCard from "../../components/TaskCard.vue";
 import ModalGray from "@/components/ModalGray.vue";
 import ModalAdd from "@/components/ModalAdd.vue";
 import ModalEdit from "@/components/ModalEdit.vue";
+import CreateCard from "@/components/CreateCard.vue";
 
 import axios from "axios";
 
@@ -34,15 +34,21 @@ export default {
     TaskCard,
     ModalGray,
     ModalAdd,
-    ModalEdit
+    ModalEdit,
+    CreateCard
   },
   props: [],
   data() {
     return {
       LocalTasks: [],
-      openModelEdit: false,
-      openModelAdd: false,
+      showModelEdit: false,
+      showModelAdd: false,
       selectedTaskToEdit: ""
+    }
+  },
+  computed: {
+    openModal(){
+      return this.showModelEdit || this.showModelAdd;
     }
   },
   mounted() {
@@ -55,8 +61,12 @@ export default {
       })
     },
     closeModals(){
-      this.openModelAdd = false;
-      this.openModelEdit = false;
+      this.showModelAdd = false;
+      this.showModelEdit = false;
+    },
+    OpenModalEdit(event){
+      this.selectedTaskToEdit = event
+      this.showModelEdit = true
     }
   }
 }
