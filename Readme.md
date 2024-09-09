@@ -6,7 +6,7 @@
 ## Instalação e execução
 ### Instalação
   - Esse projeto utiliza nodeJs [Link para download](https://nodejs.org/en/download/package-manager/current)
-  - Para verificar se a instalação funcionou corretamente abra o console do seu computador de digite
+  - Para verificar se a instalação funcionou corretamente abra o console do seu computador e digite
     ```console
       npm -v 
     ```
