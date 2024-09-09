@@ -1,4 +1,4 @@
-import { Controller ,Get ,Post ,Put ,Req, Body, Delete, Param } from '@nestjs/common';
+import { Controller ,Get ,Post ,Put ,Req, Body, Delete, Param, Query } from '@nestjs/common';
 import { Request } from 'express';
 import { AssuntosService } from './assuntos.service';
 import { Assunto } from './schemas/assunto.schema';
@@ -10,8 +10,13 @@ export class AssuntosController {
     constructor(private readonly appService: AssuntosService) {}
 
     @Get()
-    index(@Req() request: Request): Promise<Assunto[]> {
-        return this.appService.findAll();
+    index(@Req() request: Request, @Query('search') search: string): Promise<Assunto[]> {
+        if(search){
+            return this.appService.findBySearch(search);
+        }else{
+            return this.appService.findAll();
+        }
+        
     }
 
     @Get(":id")

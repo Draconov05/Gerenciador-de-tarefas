@@ -37,6 +37,28 @@ export class AssuntosService {
 
     return res;
   }
+  async findBySearch(search: string): Promise<Assunto[]> {
+    var res = await this.assuntoModel.aggregate([
+      {
+        $match: {
+          titulo: {
+            $regex: search,
+            $options: 'i'
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: "links",
+          localField: "_id",
+          foreignField: "AssuntoId",
+          as: "link"
+        }
+      }
+    ]).exec();
+
+    return res;
+  }
 
   async findOne(id: string): Promise<Assunto> {
     var res = await this.assuntoModel.aggregate([
@@ -62,20 +84,22 @@ export class AssuntosService {
 
     var status: Status = Status[CreateAssuntoDto.status]
 
+    const today = new Date();
+
     var AssuntoData = {
       "titulo": CreateAssuntoDto.titulo,
       "palavrasChaves": CreateAssuntoDto.palavrasChaves,
-      "status": status
+      "status": status,
+      "dataCriacao": new Date(), 
+      "dataAtualizacao": new Date()
     };
 
     const createdAssunto = new this.assuntoModel(AssuntoData);
-    createdAssunto.save();
+    await createdAssunto.save();
 
     var tags = createdAssunto.palavrasChaves.split(",")
 
     await this.storeNoticias(tags,createdAssunto)
-
-    console.log("done!")
 
     return createdAssunto;
   }
@@ -100,6 +124,8 @@ export class AssuntosService {
     if (status != null) {
       assunto.status = status;
     }
+
+    assunto.dataAtualizacao = new Date();
 
     return assunto.save();
   }
