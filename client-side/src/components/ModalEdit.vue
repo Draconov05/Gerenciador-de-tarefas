@@ -9,7 +9,7 @@
         </div>
         <div class="flex flex-col h-full space-y-4 w-full justify-center">
             <div class="flex flex-col">
-                <label for="titulo">Titulo: </label>
+                <label for="titulo">Título: </label>
                 <input class="border w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm" name="titulo" type="text" v-model="localTask.titulo">
             </div>
             <div class="flex flex-col">
@@ -17,7 +17,7 @@
                 <SelectItems @select="selectStatus" :options="options" :selected="localTask.status"></SelectItems>
             </div>
             <div class="flex flex-col">
-                <label for="palavraChave">Palavras Chave: </label>
+                <label for="palavraChave">Palavras-chave: </label>
                 <!-- <input class="border w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm" name="palavraChave" type="text" v-model="localTask.tags"> -->
                 <div class="space-x-1 overflow-x-auto">
                     <BadgeDeletable v-for="(keyWord, index) in localTagsArr" :key="index" :value="keyWord" tipo="key" @delete="removeFromTags"></BadgeDeletable>
@@ -32,7 +32,7 @@
         </div>
         <div class="mt-1 space-x-1">
             <button class="text-sm rounded-lg text-green-400 bg-green-100 px-2 py-1" @click="storeTask">Salvar</button>
-            <button class="text-sm rounded-lg text-blue-400 bg-blue-100 px-2 py-1">Ver noticias</button>
+            <button class="text-sm rounded-lg text-blue-400 bg-blue-100 px-2 py-1" @click="goToNoticias">Ver notícias</button>
         </div>
     </div>
 </template>  
@@ -106,7 +106,10 @@ export default {
             this.$emit("changed")
         }).catch(err => console.log(err))
 
-    }
+    },
+    goToNoticias(){
+        this.$router.replace({ name: 'noticias', query: { task: this.localTask._id }})
+    },
   }
 }
 </script>

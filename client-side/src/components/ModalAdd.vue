@@ -1,6 +1,6 @@
 
 <template>
-    <div class="h-[45vh] w-full border px-5 flex flex-col justify-center items-between overflow-y-auto py-5">
+    <form class="h-[45vh] w-full border px-5 flex flex-col justify-center items-between overflow-y-auto py-5" @submit.prevent="storeTask">
         <div class="mt-1 space-x-1 flex justify-between">
             <span>Criar nova tarefa</span>
             <div @click="$emit('close')" class="cursor-pointer">
@@ -9,15 +9,15 @@
         </div>
         <div class="flex flex-col h-full space-y-4 w-full justify-center">
             <div class="flex flex-col">
-                <label for="titulo">Titulo: </label>
-                <input class="border w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm" name="titulo" type="text" v-model="localTask.titulo">
+                <label for="titulo">Título: </label>
+                <input required class="border w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm" name="titulo" type="text" v-model="localTask.titulo">
             </div>
             <div class="flex flex-col">
                 <label for="status">Status: </label>
                 <SelectItems @select="selectStatus" :options="options" :selected="localTask.status"></SelectItems>
             </div>
             <div class="flex flex-col">
-                <label for="palavraChave">Palavras Chave: </label>
+                <label for="palavraChave">Palavras-chave: </label>
                 <!-- <input class="border w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm" name="palavraChave" type="text" v-model="localTask.tags"> -->
                 <div class="space-x-1 overflow-x-auto">
                     <BadgeDeletable v-for="(keyWord, index) in localTagsArr" :key="index" :value="keyWord" tipo="key" @delete="removeFromTags"></BadgeDeletable>
@@ -31,9 +31,9 @@
             
         </div>
         <div class="mt-1 space-x-1">
-            <button class="text-sm rounded-lg text-green-400 bg-green-100 px-2 py-1" @click="storeTask">Salvar</button>
+            <button class="text-sm rounded-lg text-green-400 bg-green-100 px-2 py-1" type="submit">Salvar</button>
         </div>
-    </div>
+    </form>
 </template>  
 
 <script >
@@ -46,6 +46,7 @@ import BadgeStatus from './BadgeStatus.vue';
 import axios from "axios";
 
 export default {
+    props: ["status"],
   emits: ["changed","close"],
   components: {
     SelectItems,
@@ -58,7 +59,7 @@ export default {
         localTask: {
             _id: "",
             titulo: "",
-            status: "",
+            status: this.status ?? "",
         },
         localTagsArr: [],
         newTag: false,
