@@ -1,6 +1,6 @@
 
 <template>
-    <div class="h-[45vh] w-full border px-5 flex flex-col justify-center items-between overflow-y-auto py-5">
+    <form class="h-[45vh] w-full border px-5 flex flex-col justify-center items-between overflow-y-auto py-5" @submit.prevent="storeTask">
         <div class="mt-1 space-x-1 flex justify-between">
             <span>Editar {{ localTask.titulo }}</span>
             <div @click="$emit('close')" class="cursor-pointer">
@@ -31,10 +31,10 @@
             
         </div>
         <div class="mt-1 space-x-1">
-            <button class="text-sm rounded-lg text-green-400 bg-green-100 px-2 py-1" @click="storeTask">Salvar</button>
-            <button class="text-sm rounded-lg text-blue-400 bg-blue-100 px-2 py-1" @click="goToNoticias">Ver notícias</button>
+            <button class="text-sm rounded-lg text-green-400 bg-green-100 px-2 py-1" type="submit">Salvar</button>
+            <button class="text-sm rounded-lg text-blue-400 bg-blue-100 px-2 py-1" type="button" @click="goToNoticias">Ver notícias</button>
         </div>
-    </div>
+    </form>
 </template>  
 
 <script >
@@ -73,11 +73,15 @@ export default {
   },
   mounted() {
     this.localTagsArr = this.task.palavrasChaves.split(",")
+
+    let option = this.options.filter(res => {
+        return res.text == this.task.status
+    });
+    
+    this.localTask.status = option[0].value
+
   },
   methods: {
-    getTask(){
-
-    },
     selectStatus(event){
         this.localTask.status = event.value
     },
