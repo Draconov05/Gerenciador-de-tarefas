@@ -4,10 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Assunto, Status } from './schemas/assunto.schema';
 import { CreateAssuntoDto } from './dto/create-assunto.dto';
 import { LinksService } from '../links/links.service';
-import { Link } from '../links/schemas/link.schema';
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, ForbiddenException} from '@nestjs/common';
-import { map, catchError } from 'rxjs';
 import axios from 'axios';
 
 

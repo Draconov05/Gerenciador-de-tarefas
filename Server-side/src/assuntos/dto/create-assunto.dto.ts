@@ -1,11 +1,13 @@
-export class CreateAssuntoDto {
-    titulo: string;
-  
-    palavrasChaves: string;
-  
-    status: string;
-  
-    dataCriacao: Date;
+import { ApiProperty } from '@nestjs/swagger';
 
-    link: string;
-  }
+
+export class CreateAssuntoDto {
+  @ApiProperty()
+  titulo: string;
+
+  @ApiProperty()
+  palavrasChaves: string;
+
+  @ApiProperty()
+  status: string;
+}
