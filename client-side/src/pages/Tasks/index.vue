@@ -53,7 +53,7 @@
     <div v-else-if="showDeleteConfirm"
       class="h-[20vh] bg-red-50 rounded-lg flex flex-col justify-center items-start p-5 space-y-2">
       <span class="text-red-600 font-md">
-        Você tem certeza que dejesa deletar a tarefa "{{ selectedTaskToEdit.titulo }}" ?
+        Você tem certeza que deseja deletar a tarefa "{{ selectedTaskToEdit.titulo }}" ?
       </span>
       <div class="space-x-2">
         <button class="text-sm rounded-lg text-red-400 bg-red-100 px-2 py-1" @click="deleteTask">Deletar</button>
