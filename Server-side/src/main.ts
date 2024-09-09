@@ -11,7 +11,6 @@ async function bootstrap() {
     .setTitle('TaskGen api')
     .setDescription('TaskGen API description')
     .setVersion('1.0')
-    .addTag('taskgen')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
