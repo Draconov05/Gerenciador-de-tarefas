@@ -1,14 +1,7 @@
 # Desafio Técnico de Programação: Aplicação de Gerenciamento de Assuntos com Integração de API Pública
 
-- README.md detalhando:
-  - Descrição do projeto.
-  - Instruções de instalação e execução para backend e frontend.
-  - Configuração de variáveis de ambiente (especialmente para chaves da API pública).
-  - Tecnologias e bibliotecas utilizadas.
-  - API Documentation (pode ser com Swagger ou similar) detalhando os endpoints disponíveis.
-
 ## Descrição do projeto
-
+  - Foi desenvolvida uma aplicação web full-stack para gerenciamento de tarefas, utilizando NestJS no backend e Vue.js no frontend. O banco de dados escolhido foi o MongoDB, garantindo flexibilidade e escalabilidade no armazenamento das informações. Além das funcionalidades de CRUD (criar, ler, atualizar e deletar tarefas), a aplicação também integra-se à API pública do IBGE (https://servicodados.ibge.gov.br/api/v3/noticias/) para exibir as últimas notícias relacionadas, oferecendo aos usuários informações complementares em tempo real.
 
 ## Instalação e execução
 ### Instalação
