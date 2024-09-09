@@ -15,7 +15,7 @@
       10.8.1
     ```
 
-### Instalação de dependencias
+### Instalação de dependências 
   - Frontend
     ```console
     cd client-side && npm i 
@@ -62,4 +62,4 @@
       
 
 ## API Documentation
-  Para acessar a documentação da api basta que enquanto estiver rodando a aplicação Backend acessar o caminho "/docs"
+  Para acessar a documentação da api basta que enquanto estiver rodando a aplicação Backend acesse o caminho "localhost:3000/docs".

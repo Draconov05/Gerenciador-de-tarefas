@@ -17,7 +17,7 @@
             </div>
             <div class="w-[45%] h-[10vh] border bg-green-50 flex justify-center items-center rounded-lg">
                 <span class="text-green-400">
-                    Concluidos: {{ LocalTasksConcluido.length }}
+                    Concluídos: {{ LocalTasksConcluido.length }}
                 </span>
             </div>
         </div>
