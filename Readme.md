@@ -10,7 +10,7 @@
     ```console
       npm -v 
     ```
-  - Caso o retorno seja algo como um numero então a instalação funcionou corretamente
+  - Caso o retorno seja algo como um número, então a instalação funcionou corretamente
      ```console
       10.8.1
     ```
