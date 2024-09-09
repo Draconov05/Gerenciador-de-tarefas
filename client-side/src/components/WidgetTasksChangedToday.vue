@@ -2,7 +2,7 @@
 <template>
     <div>
         <span>
-            Tarefas Modificadas hoje ({{ $moment(new Date()).locale('pt-br').format('L') }}):
+            Tarefas modificadas hoje ({{ $moment(new Date()).locale('pt-br').format('L') }}):
         </span>
         <div class="flex space-x-1">
             <div class="w-[45%] h-[10vh] border bg-gray-50 flex justify-center items-center rounded-lg">
