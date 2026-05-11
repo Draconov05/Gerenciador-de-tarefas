@@ -142,49 +142,41 @@ export class AssuntosService {
 
   }
 
-  async storeNoticias(tags: any[],assunto): Promise<Boolean> {
+  async storeNoticias(tags: string[], assuntoId: string): Promise<boolean> {
     try {
-      await tags.forEach(async element => {
-        if (element == "ar livre") {
-          return true
-        } else {
-
-          var baseUrl = "https://servicodados.ibge.gov.br/api/v3/noticias/";
-
-          var url = baseUrl + "?destaque=0&tipo=noticia&busca=" + element;
-
-          const response = await axios({
-            method: "GET",
-            url: url
-          }).catch(() => {
-            throw new ForbiddenException('API not available');
-          });
-
-          response.data["items"].forEach(async el => {
-
-            var find = await this.linkService.findByLink(el["link"]);
-
-            if (!find) { 
-              var Link = {
-                "link": el["link"]
-              }
-
-              Link["AssuntoId"] = assunto;
-
-              await this.linkService.create(Link);
-            }
-          })
-          
+      for (const element of tags) {
+        if (element === "ar livre") {
+          continue;
         } 
-      });
 
-      return true
+        const baseUrl = "https://servicodados.ibge.gov.br/api/v3/noticias/";
+        const url = `${baseUrl}?destaque=0&tipo=noticia&busca=${element}`;
+
+        const response = await axios({
+          method: "GET",
+          url: url
+        }).catch(() => {
+          throw new ForbiddenException('API IBGE indisponível no momento');
+        });
+
+        for (const el of response.data["items"]) {
+          const find = await this.linkService.findByLink(el["link"]);
+
+          if (!find) { 
+            const Link = {
+              "link": el["link"],
+              "AssuntoId": assuntoId
+            };
+            await this.linkService.create(Link);
+          }
+        }
+      }
+      return true;
 
     } catch (error) {
-      console.log(error)
-      throw new HttpException('Erro interno', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error('Erro ao buscar notícias:', error);
+      throw new HttpException('Erro interno ao buscar notícias', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
   }
 
   async getNoticias(id: string): Promise<Assunto> {
